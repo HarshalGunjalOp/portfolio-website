@@ -1,7 +1,66 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Mail, Phone, MapPin, ExternalLink, Calendar, GraduationCap, Briefcase, Code, Star, ChevronDown, Menu, X } from 'lucide-react';
+import { Clipboard, Check, Github, Linkedin, Mail, Phone, MapPin, ExternalLink, Calendar, GraduationCap, Briefcase, Code, Star, ChevronDown, Menu, X } from 'lucide-react';
 import Image from "next/image";
+
+type CopyTextProps = {
+  text: string;
+  className?: string;
+};
+
+
+export const CopyText: React.FC<CopyTextProps> = ({ text, className = "" }) => {
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopy = async (e?: React.MouseEvent | React.KeyboardEvent) => {
+    // prevent link navigation when inside <a>
+    e?.preventDefault();
+    e?.stopPropagation();
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1200);
+    } catch (err) {
+      console.error("Copy failed", err);
+    }
+  };
+
+  return (
+    <div
+      className={`relative group mx-auto w-full max-w-[240px] ${className}`}
+    >
+      {/* Centered/truncated text - also copies on click */}
+      <button
+        onClick={handleCopy}
+        className="block w-full text-gray-400 text-sm text-center truncate mx-auto select-none focus:outline-none"
+        title={text}
+      >
+        {text}
+      </button>
+
+      {/* Overlay copy control; pointer-events enabled and stops nav */}
+      <div
+        className="pointer-events-none absolute inset-0 flex items-center justify-center
+                   opacity-0 group-hover:opacity-100 group-focus-within:opacity-100
+                   transition-opacity"
+      >
+        <button
+          onClick={handleCopy}
+          className="pointer-events-auto rounded-full bg-black/40 backdrop-blur px-2 py-2
+                     border border-white/10 focus:outline-none"
+          aria-label="Copy"
+        >
+          {copied ? (
+            <Check size={16} className="text-green-400" />
+          ) : (
+            <Clipboard size={16} className="text-gray-200" />
+          )}
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('home');
@@ -466,46 +525,48 @@ const Portfolio = () => {
           </p>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <a
-              href="mailto:23f2001627@ds.study.iitm.ac.in?subject=Portfolio Contact&body=Hi Harshal,%0A%0AI found your portfolio and would like to discuss potential opportunities.%0A%0ABest regards"
-              className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-blue-400/50 transition-all duration-300 hover:transform hover:scale-105"
-            >
-              <Mail className="text-blue-400 mx-auto mb-4" size={32} />
-              <h3 className="text-lg font-semibold mb-2">Email</h3>
-              <p className="text-gray-400 text-sm">23f2001627@ds.study.iitm.ac.in</p>
-            </a>
+           <a
+  href="mailto:23f2001627@ds.study.iitm.ac.in?subject=Portfolio Contact&body=Hi Harshal,%0A%0AI found your portfolio and would like to discuss potential opportunities.%0A%0ABest regards"
+  className="relative min-w-0 bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-blue-400/50 transition-all duration-300 hover:transform hover:scale-105"
+>
+  <Mail className="text-blue-400 mx-auto mb-4" size={32} />
+  <h3 className="text-lg font-semibold mb-2">Email</h3>
+  <CopyText
+    text="23f2001627@ds.study.iitm.ac.in"
+    className="min-w-0"
+  />
+</a> 
+
+           <a
+  href="tel:+919325891730"
+  className="relative min-w-0 bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-green-400/50 transition-all duration-300 hover:transform hover:scale-105"
+>
+  <Phone className="text-green-400 mx-auto mb-4" size={32} />
+  <h3 className="text-lg font-semibold mb-2">Phone</h3>
+  <CopyText text="+91 9325891730" className="min-w-0" />
+</a> 
+
+           <a
+  href="https://linkedin.com/in/harshalgunjal"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="relative min-w-0 bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-blue-400/50 transition-all duration-300 hover:transform hover:scale-105"
+>
+  <Linkedin className="text-blue-400 mx-auto mb-4" size={32} />
+  <h3 className="text-lg font-semibold mb-2">LinkedIn</h3>
+  <CopyText text="linkedin.com/in/harshalgunjal" className="min-w-0" />
+</a> 
 
             <a
-              href="tel:+919325891730"
-              className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-green-400/50 transition-all duration-300 hover:transform hover:scale-105"
-            >
-              <Phone className="text-green-400 mx-auto mb-4" size={32} />
-              <h3 className="text-lg font-semibold mb-2">Phone</h3>
-              <p className="text-gray-400 text-sm">+91 9325891730</p>
-            </a>
-
-            <a
-              href="https://linkedin.com/in/harshalgunjal"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-blue-400/50 transition-all duration-300 hover:transform hover:scale-105"
-            >
-              <Linkedin className="text-blue-400 mx-auto mb-4" size={32} />
-              <h3 className="text-lg font-semibold mb-2">LinkedIn</h3>
-              <p className="text-gray-400 text-sm">Connect with me</p>
-            </a>
-
-            <a
-              href="https://github.com/HarshalGunjalOp"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-blue-400/50 transition-all duration-300 hover:transform hover:scale-105"
-            >
-              <Github className="text-blue-400 mx-auto mb-4" size={32} />
-              <h3 className="text-lg font-semibold mb-2">GitHub</h3>
-              <p className="text-gray-400 text-sm">Check out my code</p>
-            </a>
-          </div>
+  href="https://github.com/HarshalGunjalOp"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="relative min-w-0 bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-blue-400/50 transition-all duration-300 hover:transform hover:scale-105"
+>
+  <Github className="text-blue-400 mx-auto mb-4" size={32} />
+  <h3 className="text-lg font-semibold mb-2">GitHub</h3>
+  <CopyText text="github.com/HarshalGunjalOp" className="min-w-0" />
+</a>          </div>
 
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8">
             <h3 className="text-2xl font-semibold mb-4">Ready to collaborate?</h3>
@@ -525,7 +586,7 @@ const Portfolio = () => {
 
       {/* Footer */}
       <footer className="py-8 text-center text-gray-400 border-t border-white/10">
-        <p>&copy; 2025 Harshal Gunjal. Built with React and Tailwind CSS.</p>
+        <p>&copy; 2025 Harshal Gunjal.</p>
       </footer>
     </div>
   );
